@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard GA4 — Monaldishoes.com</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f11;
+    --surface: #1a1a1f;
+    --surface2: #222228;
+    --border: #2e2e36;
+    --accent: #c8a96e;
+    --accent2: #e8c87a;
+    --text: #f0ede8;
+    --text-muted: #7a7a8a;
+    --green: #4ade80;
+    --red: #f87171;
+    --blue: #60a5fa;
+    --purple: #a78bfa;
+    --orange: #fb923c;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 32px 24px;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .header-left h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+  .header-left h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .header-left p {
+    color: var(--text-muted);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .header-right {
+    text-align: right;
+  }
+  .period-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+  .period-badge span {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  /* KPI GRID */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    position: relative;
+    overflow: hidden;
+  }
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0.6;
+  }
+  .kpi-card.green::before { background: var(--green); }
+  .kpi-card.blue::before { background: var(--blue); }
+  .kpi-card.purple::before { background: var(--purple); }
+  .kpi-card.orange::before { background: var(--orange); }
+
+  .kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .kpi-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+  .kpi-sub strong {
+    color: var(--accent);
+  }
+
+  /* INSIGHT BANNER */
+  .insight-banner {
+    background: linear-gradient(135deg, #1a1510 0%, #1a1a1f 100%);
+    border: 1px solid #3d3020;
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 20px;
+    margin-bottom: 32px;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+  .insight-banner strong {
+    color: var(--accent2);
+  }
+
+  /* CHARTS GRID */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .chart-card.full {
+    grid-column: 1 / -1;
+  }
+  .chart-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .chart-subtitle {
+    font-size: 13px;
+    color: var(--text);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  canvas { max-height: 260px; }
+
+  /* CHANNEL TABLE */
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 0 12px 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  thead th:last-child { text-align: right; }
+  tbody td {
+    padding: 12px 12px 12px 0;
+    border-bottom: 1px solid #1e1e24;
+    font-size: 13px;
+    color: var(--text);
+    vertical-align: middle;
+  }
+  tbody td:last-child { text-align: right; }
+  tbody tr:last-child td { border-bottom: none; }
+  .channel-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+  .bar-bg {
+    background: var(--surface2);
+    border-radius: 3px;
+    height: 6px;
+    width: 100%;
+    max-width: 120px;
+    margin-top: 4px;
+  }
+  .bar-fill {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--accent);
+  }
+  .rate-badge {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .rate-high { background: #14291a; color: var(--green); }
+  .rate-mid { background: #1a1e2e; color: var(--blue); }
+  .rate-low { background: #2a1818; color: var(--red); }
+
+  /* TOP PAGES */
+  .pages-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .page-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #1e1e24;
+  }
+  .page-item:last-child { border-bottom: none; }
+  .page-path {
+    font-size: 12px;
+    color: var(--accent);
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .page-path:hover {
+    color: var(--accent2);
+    text-decoration: underline;
+  }
+  .page-views {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    margin-left: 12px;
+  }
+  .page-views small {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-left: 4px;
+  }
+
+  /* ALERTS */
+  .alerts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .alert-card {
+    border-radius: 10px;
+    padding: 16px 18px;
+    border: 1px solid;
+  }
+  .alert-card.warn {
+    background: #1a160a;
+    border-color: #4a3a10;
+  }
+  .alert-card.good {
+    background: #0a1a10;
+    border-color: #144a20;
+  }
+  .alert-card.info {
+    background: #0a0f1a;
+    border-color: #10244a;
+  }
+  .alert-icon {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  .alert-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .alert-card.warn .alert-title { color: #e8b84a; }
+  .alert-card.good .alert-title { color: var(--green); }
+  .alert-card.info .alert-title { color: var(--blue); }
+  .alert-body {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+  }
+
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-grid { grid-template-columns: 1fr; }
+    .pages-grid { grid-template-columns: 1fr; }
+    .alerts-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Monaldishoes<em>.com</em></h1>
+    <p>Analytics Overview — GA4 Report</p>
+  </div>
+  <div class="header-right">
+    <div class="period-badge">Periodo: <span>01 Mar → 25 Giu 2026</span></div>
+  </div>
+</div>
+
+<!-- KPI CARDS -->
+<div class="kpi-grid">
+  <div class="kpi-card green">
+    <div class="kpi-label">Sessioni totali</div>
+    <div class="kpi-value">2.953</div>
+    <div class="kpi-sub">Tasso coinvolgimento medio: <strong>58,3%</strong></div>
+  </div>
+  <div class="kpi-card blue">
+    <div class="kpi-label">Sessioni con coinvolgimento</div>
+    <div class="kpi-value">1.721</div>
+    <div class="kpi-sub">Su 2.953 sessioni totali</div>
+  </div>
+  <div class="kpi-card purple">
+    <div class="kpi-label">Nuovi utenti</div>
+    <div class="kpi-value">2.4K</div>
+    <div class="kpi-sub">Utenti di ritorno: <strong>183</strong></div>
+  </div>
+  <div class="kpi-card orange">
+    <div class="kpi-label">Entrate totali</div>
+    <div class="kpi-value">€963</div>
+    <div class="kpi-sub">100% da canale <strong>Referral</strong></div>
+  </div>
+</div>
+
+<!-- INSIGHT BANNER -->
+<div class="insight-banner">
+  ⚡ <strong>Insight chiave:</strong> Il traffico è dominato da <strong>Paid Search (36%)</strong> e <strong>Paid Social (19,6%)</strong>, ma le entrate (€963) arrivano esclusivamente dal canale <strong>Referral</strong>. L'Organic Search genera il miglior engagement (81s di durata media) con solo 164 sessioni — alto potenziale inespresso. Il mercato tedesco (/de/) domina con 2.112 visualizzazioni — il doppio dell'italiano.
+</div>
+
+<!-- CHARTS -->
+<div class="charts-grid">
+  <div class="chart-card">
+    <div class="chart-title">Acquisizione</div>
+    <div class="chart-subtitle">Sessioni per canale</div>
+    <canvas id="channelChart"></canvas>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Qualità traffico</div>
+    <div class="chart-subtitle">Durata media coinvolgimento (secondi)</div>
+    <canvas id="durationChart"></canvas>
+  </div>
+</div>
+
+<!-- CHANNEL TABLE -->
+<div class="table-card">
+  <div class="chart-title" style="margin-bottom:6px">Canali di acquisizione</div>
+  <div class="chart-subtitle">Dettaglio performance per canale</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Canale</th>
+        <th>Sessioni</th>
+        <th>Volume</th>
+        <th>Durata media</th>
+        <th>Tasso coinvolgimento</th>
+        <th>Entrate</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="channel-dot" style="background:#60a5fa"></span>Paid Search</td>
+        <td>1.063</td>
+        <td><div class="bar-bg"><div class="bar-fill" style="width:100%;background:#60a5fa"></div></div></td>
+        <td>20s</td>
+        <td><span class="rate-badge rate-mid">62,2%</span></td>
+        <td>€0</td>
+      </tr>
+      <tr>
+        <td><span class="channel-dot" style="background:#a78bfa"></span>Paid Social</td>
+        <td>578</td>
+        <td><div class="bar-bg"><div class="bar-fill" style="width:54%;background:#a78bfa"></div></div></td>
+        <td>18s</td>
+        <td><span class="rate-badge rate-low">56,2%</span></td>
+        <td>€0</td>
+      </tr>
+      <tr>
+        <td><span class="channel-dot" style="background:#f472b6"></span>Organic Social</td>
+        <td>462</td>
+        <td><div class="bar-bg"><div class="bar-fill" style="width:43%;background:#f472b6"></div></div></td>
+        <td>21s</td>
+        <td><span class="rate-badge rate-low">38,1%</span></td>
+        <td>€0</td>
+      </tr>
+      <tr>
+        <td><span class="channel-dot" style="background:#fb923c"></span>Cross-network</td>
+        <td>405</td>
+        <td><div class="bar-bg"><div class="bar-fill" style="width:38%;background:#fb923c"></div></div></td>
+        <td>31s</td>
+        <td><span class="rate-badge rate-mid">62,5%</span></td>
+        <td>€0</td>
+      </tr>
+      <tr>
+        <td><span class="channel-dot" style="background:#34d399"></span>Direct</td>
+        <td>178</td>
+        <td><div class="bar-bg"><div class="bar-fill" style="width:17%;background:#34d399"></div></div></td>
+        <td>57s</td>
+        <td><span class="rate-badge rate-mid">59%</span></td>
+        <td>€0</td>
+      </tr>
+      <tr>
+        <td><span class="channel-dot" style="background:#4ade80"></span>Organic Search</td>
+        <td>164</td>
+        <td><div class="bar-bg"><div class="bar-fill" style="width:15%;background:#4ade80"></div></div></td>
+        <td>82s</td>
+        <td><span class="rate-badge rate-high">63,4%</span></td>
+        <td>€0</td>
+      </tr>
+      <tr>
+        <td><span class="channel-dot" style="background:#c8a96e"></span>Referral</td>
+        <td>93</td>
+        <td><div class="bar-bg"><div class="bar-fill" style="width:9%;background:#c8a96e"></div></div></td>
+        <td>171s</td>
+        <td><span class="rate-badge rate-high">76,3%</span></td>
+        <td style="color:#c8a96e;font-weight:700">€963</td>
+      </tr>
+      <tr>
+        <td><span class="channel-dot" style="background:#7dd3fc"></span>Paid Shopping</td>
+        <td>41</td>
+        <td><div class="bar-bg"><div class="bar-fill" style="width:4%;background:#7dd3fc"></div></div></td>
+        <td>12s</td>
+        <td><span class="rate-badge rate-low">53,7%</span></td>
+        <td>€0</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TOP PAGES -->
+<div class="charts-grid">
+  <div class="chart-card">
+    <div class="chart-title">Pagine</div>
+    <div class="chart-subtitle">Top 8 per visualizzazioni</div>
+    <div id="topPages"></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Mercati</div>
+    <div class="chart-subtitle">Visualizzazioni per lingua/paese</div>
+    <canvas id="marketChart"></canvas>
+  </div>
+</div>
+
+<!-- ALERTS -->
+<div class="alerts-grid">
+  <div class="alert-card warn">
+    <div class="alert-icon">⚠️</div>
+    <div class="alert-title">PAID NON CONVERTE</div>
+    <div class="alert-body">Paid Search e Paid Social portano il 56% del traffico ma generano €0 di entrate. Budget speso senza ritorno diretto sul sito.</div>
+  </div>
+  <div class="alert-card good">
+    <div class="alert-icon">🚀</div>
+    <div class="alert-title">ORGANIC SEARCH DA POTENZIARE</div>
+    <div class="alert-body">Solo 164 sessioni ma 82 secondi di durata media — il traffico più qualificato. Investire in SEO può moltiplicare i risultati a costo zero.</div>
+  </div>
+  <div class="alert-card info">
+    <div class="alert-icon">🌍</div>
+    <div class="alert-title">MERCATO TEDESCO #1</div>
+    <div class="alert-body">Il traffico /de/ (2.112 view) domina il sito. Berlino, Monaco e Francoforte sono le città top. Opportunità UX/copy in tedesco.</div>
+  </div>
+</div>
+
+<div class="footer">
+  Dashboard generata da Claude • Dati GA4 Monaldishoes.com • 1 Mar – 25 Giu 2026
+</div>
+
+<script>
+// CHANNEL CHART
+const channelCtx = document.getElementById('channelChart').getContext('2d');
+new Chart(channelCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Paid Search', 'Paid Social', 'Organic Social', 'Cross-network', 'Direct', 'Organic Search', 'Referral', 'Paid Shopping'],
+    datasets: [{
+      data: [1063, 578, 462, 405, 178, 164, 93, 41],
+      backgroundColor: ['#60a5fa','#a78bfa','#f472b6','#fb923c','#34d399','#4ade80','#c8a96e','#7dd3fc'],
+      borderWidth: 0,
+      hoverOffset: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    cutout: '65%',
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: '#7a7a8a',
+          font: { size: 10, family: 'Inter' },
+          padding: 10,
+          boxWidth: 10
+        }
+      }
+    }
+  }
+});
+
+// DURATION CHART
+const durationCtx = document.getElementById('durationChart').getContext('2d');
+new Chart(durationCtx, {
+  type: 'bar',
+  data: {
+    labels: ['Referral', 'Organic\nSearch', 'Direct', 'Cross-net', 'Org Social', 'Paid Search', 'Paid Social', 'Paid Shop'],
+    datasets: [{
+      data: [171, 82, 57, 31, 21, 20, 18, 12],
+      backgroundColor: (ctx) => {
+        const v = ctx.raw;
+        if (v > 60) return '#4ade80';
+        if (v > 30) return '#60a5fa';
+        return '#7a7a8a';
+      },
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    indexAxis: 'y',
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      x: {
+        grid: { color: '#1e1e24' },
+        ticks: { color: '#7a7a8a', font: { size: 10 } }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { color: '#9a9aaa', font: { size: 10 } }
+      }
+    }
+  }
+});
+
+// TOP PAGES
+const baseUrl = 'https://www.monaldishoes.com';
+const pages = [
+  { path: '/de/', views: 2112, users: 1507 },
+  { path: '/', views: 1109, users: 568 },
+  { path: '/de/shop/', views: 742, users: 486 },
+  { path: '/collezioni/', views: 283, users: 73 },
+  { path: '/de/niedriger-absatz/', views: 271, users: 211 },
+  { path: '/de/mittlerer-absatz/', views: 223, users: 181 },
+  { path: '/de/categoria-prodotto/outlet/', views: 143, users: 105 },
+  { path: '/prodotto/edythe-decollete/', views: 123, users: 27 },
+];
+const pagesEl = document.getElementById('topPages');
+const maxViews = pages[0].views;
+pages.forEach(p => {
+  const pct = Math.round((p.views / maxViews) * 100);
+  const fullUrl = baseUrl + p.path;
+  pagesEl.innerHTML += `
+    <div class="page-item">
+      <div style="flex:1;min-width:0">
+        <a class="page-path" href="${fullUrl}" target="_blank" rel="noopener">${fullUrl}</a>
+        <div class="bar-bg" style="max-width:100%;margin-top:5px">
+          <div class="bar-fill" style="width:${pct}%;background:#c8a96e"></div>
+        </div>
+      </div>
+      <div class="page-views">${p.views.toLocaleString('it-IT')}<small>views</small></div>
+    </div>`;
+});
+
+// MARKET CHART
+const marketCtx = document.getElementById('marketChart').getContext('2d');
+new Chart(marketCtx, {
+  type: 'bar',
+  data: {
+    labels: ['🇩🇪 Tedesco\n/de/', '🇮🇹 Italiano\n/', '🇬🇧 Inglese\n/en/', '🇫🇷 Francese\n/fr/'],
+    datasets: [{
+      label: 'Visualizzazioni',
+      data: [3800, 1109, 280, 90],
+      backgroundColor: ['#c8a96e', '#60a5fa', '#a78bfa', '#f472b6'],
+      borderRadius: 6,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.raw.toLocaleString('it-IT')} visualizzazioni`
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: '#9a9aaa', font: { size: 11 } }
+      },
+      y: {
+        grid: { color: '#1e1e24' },
+        ticks: { color: '#7a7a8a', font: { size: 10 } }
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
