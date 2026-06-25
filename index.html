@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard GA4 — Monaldishoes.com</title>
+<title>Dashboard GA4 â Monaldishoes.com</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap');
@@ -339,6 +339,77 @@
     .pages-grid { grid-template-columns: 1fr; }
     .alerts-grid { grid-template-columns: 1fr; }
   }
+
+  @media (max-width: 600px) {
+    body {
+      padding: 20px 16px;
+      font-size: 13px;
+    }
+
+    /* HEADER */
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+    }
+    .header-left h1 { font-size: 24px; }
+    .header-right { width: 100%; }
+    .period-badge { display: inline-block; }
+
+    /* KPI */
+    .kpi-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .kpi-card { padding: 14px 16px; }
+    .kpi-value { font-size: 26px; }
+    .kpi-label { font-size: 10px; margin-bottom: 6px; }
+    .kpi-sub { font-size: 11px; margin-top: 6px; }
+
+    /* INSIGHT */
+    .insight-banner {
+      padding: 12px 14px;
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+
+    /* CHARTS */
+    .charts-grid { gap: 12px; margin-bottom: 12px; }
+    .chart-card { padding: 16px; }
+    .chart-subtitle { font-size: 12px; margin-bottom: 14px; }
+    canvas { max-height: 220px; }
+
+    /* TABLE â scrollabile orizzontalmente */
+    .table-card {
+      padding: 16px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table { min-width: 480px; }
+    /* Nascondi colonna Volume (barre) su mobile */
+    thead th:nth-child(3),
+    tbody td:nth-child(3) { display: none; }
+    thead th { font-size: 10px; padding: 0 8px 10px 0; }
+    tbody td { padding: 10px 8px 10px 0; font-size: 12px; }
+
+    /* TOP PAGES */
+    .page-views { font-size: 13px; }
+    .page-path { font-size: 11px; }
+
+    /* ALERTS */
+    .alerts-grid { gap: 10px; margin-bottom: 12px; }
+    .alert-card { padding: 12px 14px; }
+    .alert-icon { font-size: 16px; margin-bottom: 6px; }
+    .alert-title { font-size: 11px; }
+    .alert-body { font-size: 11px; }
+
+    /* FOOTER */
+    .footer { font-size: 10px; padding-top: 20px; }
+  }
 </style>
 </head>
 <body>
@@ -346,10 +417,10 @@
 <div class="header">
   <div class="header-left">
     <h1>Monaldishoes<em>.com</em></h1>
-    <p>Analytics Overview — GA4 Report</p>
+    <p>Analytics Overview â GA4 Report</p>
   </div>
   <div class="header-right">
-    <div class="period-badge">Periodo: <span>01 Mar → 25 Giu 2026</span></div>
+    <div class="period-badge">Periodo: <span>01 Mar â 25 Giu 2026</span></div>
   </div>
 </div>
 
@@ -372,14 +443,14 @@
   </div>
   <div class="kpi-card orange">
     <div class="kpi-label">Entrate totali</div>
-    <div class="kpi-value">€963</div>
+    <div class="kpi-value">â¬963</div>
     <div class="kpi-sub">100% da canale <strong>Referral</strong></div>
   </div>
 </div>
 
 <!-- INSIGHT BANNER -->
 <div class="insight-banner">
-  ⚡ <strong>Insight chiave:</strong> Il traffico è dominato da <strong>Paid Search (36%)</strong> e <strong>Paid Social (19,6%)</strong>, ma le entrate (€963) arrivano esclusivamente dal canale <strong>Referral</strong>. L'Organic Search genera il miglior engagement (81s di durata media) con solo 164 sessioni — alto potenziale inespresso. Il mercato tedesco (/de/) domina con 2.112 visualizzazioni — il doppio dell'italiano.
+  â¡ <strong>Insight chiave:</strong> Il traffico Ã¨ dominato da <strong>Paid Search (36%)</strong> e <strong>Paid Social (19,6%)</strong>, ma le entrate (â¬963) arrivano esclusivamente dal canale <strong>Referral</strong>. L'Organic Search genera il miglior engagement (81s di durata media) con solo 164 sessioni â alto potenziale inespresso. Il mercato tedesco (/de/) domina con 2.112 visualizzazioni â il doppio dell'italiano.
 </div>
 
 <!-- CHARTS -->
@@ -390,7 +461,7 @@
     <canvas id="channelChart"></canvas>
   </div>
   <div class="chart-card">
-    <div class="chart-title">Qualità traffico</div>
+    <div class="chart-title">QualitÃ  traffico</div>
     <div class="chart-subtitle">Durata media coinvolgimento (secondi)</div>
     <canvas id="durationChart"></canvas>
   </div>
@@ -418,7 +489,7 @@
         <td><div class="bar-bg"><div class="bar-fill" style="width:100%;background:#60a5fa"></div></div></td>
         <td>20s</td>
         <td><span class="rate-badge rate-mid">62,2%</span></td>
-        <td>€0</td>
+        <td>â¬0</td>
       </tr>
       <tr>
         <td><span class="channel-dot" style="background:#a78bfa"></span>Paid Social</td>
@@ -426,7 +497,7 @@
         <td><div class="bar-bg"><div class="bar-fill" style="width:54%;background:#a78bfa"></div></div></td>
         <td>18s</td>
         <td><span class="rate-badge rate-low">56,2%</span></td>
-        <td>€0</td>
+        <td>â¬0</td>
       </tr>
       <tr>
         <td><span class="channel-dot" style="background:#f472b6"></span>Organic Social</td>
@@ -434,7 +505,7 @@
         <td><div class="bar-bg"><div class="bar-fill" style="width:43%;background:#f472b6"></div></div></td>
         <td>21s</td>
         <td><span class="rate-badge rate-low">38,1%</span></td>
-        <td>€0</td>
+        <td>â¬0</td>
       </tr>
       <tr>
         <td><span class="channel-dot" style="background:#fb923c"></span>Cross-network</td>
@@ -442,7 +513,7 @@
         <td><div class="bar-bg"><div class="bar-fill" style="width:38%;background:#fb923c"></div></div></td>
         <td>31s</td>
         <td><span class="rate-badge rate-mid">62,5%</span></td>
-        <td>€0</td>
+        <td>â¬0</td>
       </tr>
       <tr>
         <td><span class="channel-dot" style="background:#34d399"></span>Direct</td>
@@ -450,7 +521,7 @@
         <td><div class="bar-bg"><div class="bar-fill" style="width:17%;background:#34d399"></div></div></td>
         <td>57s</td>
         <td><span class="rate-badge rate-mid">59%</span></td>
-        <td>€0</td>
+        <td>â¬0</td>
       </tr>
       <tr>
         <td><span class="channel-dot" style="background:#4ade80"></span>Organic Search</td>
@@ -458,7 +529,7 @@
         <td><div class="bar-bg"><div class="bar-fill" style="width:15%;background:#4ade80"></div></div></td>
         <td>82s</td>
         <td><span class="rate-badge rate-high">63,4%</span></td>
-        <td>€0</td>
+        <td>â¬0</td>
       </tr>
       <tr>
         <td><span class="channel-dot" style="background:#c8a96e"></span>Referral</td>
@@ -466,7 +537,7 @@
         <td><div class="bar-bg"><div class="bar-fill" style="width:9%;background:#c8a96e"></div></div></td>
         <td>171s</td>
         <td><span class="rate-badge rate-high">76,3%</span></td>
-        <td style="color:#c8a96e;font-weight:700">€963</td>
+        <td style="color:#c8a96e;font-weight:700">â¬963</td>
       </tr>
       <tr>
         <td><span class="channel-dot" style="background:#7dd3fc"></span>Paid Shopping</td>
@@ -474,7 +545,7 @@
         <td><div class="bar-bg"><div class="bar-fill" style="width:4%;background:#7dd3fc"></div></div></td>
         <td>12s</td>
         <td><span class="rate-badge rate-low">53,7%</span></td>
-        <td>€0</td>
+        <td>â¬0</td>
       </tr>
     </tbody>
   </table>
@@ -497,24 +568,24 @@
 <!-- ALERTS -->
 <div class="alerts-grid">
   <div class="alert-card warn">
-    <div class="alert-icon">⚠️</div>
+    <div class="alert-icon">â ï¸</div>
     <div class="alert-title">PAID NON CONVERTE</div>
-    <div class="alert-body">Paid Search e Paid Social portano il 56% del traffico ma generano €0 di entrate. Budget speso senza ritorno diretto sul sito.</div>
+    <div class="alert-body">Paid Search e Paid Social portano il 56% del traffico ma generano â¬0 di entrate. Budget speso senza ritorno diretto sul sito.</div>
   </div>
   <div class="alert-card good">
-    <div class="alert-icon">🚀</div>
+    <div class="alert-icon">ð</div>
     <div class="alert-title">ORGANIC SEARCH DA POTENZIARE</div>
-    <div class="alert-body">Solo 164 sessioni ma 82 secondi di durata media — il traffico più qualificato. Investire in SEO può moltiplicare i risultati a costo zero.</div>
+    <div class="alert-body">Solo 164 sessioni ma 82 secondi di durata media â il traffico piÃ¹ qualificato. Investire in SEO puÃ² moltiplicare i risultati a costo zero.</div>
   </div>
   <div class="alert-card info">
-    <div class="alert-icon">🌍</div>
+    <div class="alert-icon">ð</div>
     <div class="alert-title">MERCATO TEDESCO #1</div>
-    <div class="alert-body">Il traffico /de/ (2.112 view) domina il sito. Berlino, Monaco e Francoforte sono le città top. Opportunità UX/copy in tedesco.</div>
+    <div class="alert-body">Il traffico /de/ (2.112 view) domina il sito. Berlino, Monaco e Francoforte sono le cittÃ  top. OpportunitÃ  UX/copy in tedesco.</div>
   </div>
 </div>
 
 <div class="footer">
-  Dashboard generata da Claude • Dati GA4 Monaldishoes.com • 1 Mar – 25 Giu 2026
+  Guro â¢ Dati GA4 Monaldishoes.com â¢ 1 Mar â 25 Giu 2026
 </div>
 
 <script>
@@ -621,7 +692,7 @@ const marketCtx = document.getElementById('marketChart').getContext('2d');
 new Chart(marketCtx, {
   type: 'bar',
   data: {
-    labels: ['🇩🇪 Tedesco\n/de/', '🇮🇹 Italiano\n/', '🇬🇧 Inglese\n/en/', '🇫🇷 Francese\n/fr/'],
+    labels: ['ð©ðª Tedesco\n/de/', 'ð®ð¹ Italiano\n/', 'ð¬ð§ Inglese\n/en/', 'ð«ð· Francese\n/fr/'],
     datasets: [{
       label: 'Visualizzazioni',
       data: [3800, 1109, 280, 90],
